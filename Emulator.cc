@@ -21,9 +21,124 @@ typedef double f64;
 struct Emulator
 {
 private:
+    struct Chip8_data
+    {
+    public:
+        const static u16 fontset_size = 80;
+        const static u16 max_file_size = 3584;
+        const static u16 num_keys = 16;
+        const static u16 num_registers = 16;
+        const static u16 screen_width = 64;
+        const static u16 screen_height = 32;
+        const static u16 sprite_width =8;
+        const static u16 stack_size = 16;
+        const static u16 system_memory = 4096;
+        const static u16 F = 15;
+
+        u8 memory[system_memory];
+
+        
+        u8 V[num_registers];
+
+       
+        unsigned short I;
+
+        
+        unsigned short pctr;
+
+        
+        unsigned char display[screen_width][screen_height];
+
+        
+        unsigned char delay_timer;
+        unsigned char sound_timer;
+
+        
+        unsigned short stack[stack_size];
+        unsigned short sptr;
+
+        
+        unsigned char key;
+
+        const unsigned char fontset[fontset_size] = {
+            0xF0, 0x90, 0x90, 0x90, 0xF0,		// 0
+            0x20, 0x60, 0x20, 0x20, 0x70,		// 1
+            0xF0, 0x10, 0xF0, 0x80, 0xF0,		// 2
+            0xF0, 0x10, 0xF0, 0x10, 0xF0,		// 3
+            0x90, 0x90, 0xF0, 0x10, 0x10,		// 4
+            0xF0, 0x80, 0xF0, 0x10, 0xF0,		// 5
+            0xF0, 0x80, 0xF0, 0x90, 0xF0,		// 6
+            0xF0, 0x10, 0x20, 0x40, 0x40,		// 7
+            0xF0, 0x90, 0xF0, 0x90, 0xF0,		// 8
+            0xF0, 0x90, 0xF0, 0x10, 0xF0,		// 9
+            0xF0, 0x90, 0xF0, 0x90, 0x90,		// A
+            0xE0, 0x90, 0xE0, 0x90, 0xE0,		// B
+            0xF0, 0x80, 0x80, 0x80, 0xF0,		// C
+            0xE0, 0x90, 0x90, 0x90, 0xE0,		// D
+            0xF0, 0x80, 0xF0, 0x80, 0xF0,		// E
+            0xF0, 0x80, 0xF0, 0x80, 0x80		// F
+        };
+
+    };
+
     void Chip8()
     {
+        Chip8_data data = Chip8_data();
+        data.pctr = 0x200;
+        data.I = 0;
+        data.sptr = 0;
 
+        memset(data.memory, 0, data.system_memory);
+        memset(data.stack, 0, data.stack_size);
+        memset(data.display, 0, data.screen_width * data.screen_height);
+        memset(data.V, 0, data.num_registers);
+
+        int i;
+        for (i = 0; i < data.fontset_size; i++)
+        {
+            data.memory[i] = data.fontset[i];
+        }
+
+        data.delay_timer = 0;
+        data.sound_timer = 0;
+
+        data.key = 0;
+
+        std::string file_name;
+        char c;
+        int loop = 1;
+
+        printf("Please select a game from the list (enter a number).\n1.TETRIS\n2.PONG\n3.EXIT\n");
+        scanf("%c", &c);
+
+        while (loop)
+        {
+            switch (c)
+            {
+            case '1':
+                file_name = "TETRIS.bin";
+                loop = 0;
+                break;
+            case '2':
+                file_name = "PONG.bin";
+                loop = 0;
+                break;
+            case '3':
+                printf("Exiting emulator...\n");
+                exit(0);
+            default:
+                break;
+            }
+        }
+
+        /*
+        
+        11-25-2023: I have got to learn C++ more in-depth, I don't really understand what I am doing so I will 
+                    try continuing or just developing other things until I understand this.
+
+                    If you read this, thank you for reading :)
+                    Will be continued...
+        */
     }
 
     void clear()
